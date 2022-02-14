@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
 
-    <PackageId>IdentityServer4.Storage</PackageId>
+    <PackageId>GST.IdentityServer4.Storage</PackageId>
     <Description>Storage interfaces and models for IdentityServer4</Description>
     <Authors>Brock Allen;Dominick Baier</Authors>
 
