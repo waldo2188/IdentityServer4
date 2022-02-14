@@ -1,4 +1,4 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
@@ -25,7 +25,7 @@ namespace IdentityServer.UnitTests.Validation.AuthorizeRequest_Validation
 
             Func<Task> act = () => validator.ValidateAsync(null);
 
-            act.Should().Throw<ArgumentNullException>();
+            act.Should().ThrowAsync<ArgumentNullException>();
         }
 
         [Fact]
@@ -388,7 +388,7 @@ namespace IdentityServer.UnitTests.Validation.AuthorizeRequest_Validation
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task prompt_none_and_other_values_should_fail()
+        public async Task Prompt_None_And_Other_Values_Should_Fail()
         {
             var parameters = new NameValueCollection();
             parameters.Add(OidcConstants.AuthorizeRequest.ClientId, "codeclient");

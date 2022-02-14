@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
+using FluentAssertions.Extensions;
 using IdentityServer.UnitTests.Common;
 using IdentityServer4.Configuration;
 using IdentityServer4.Models;
@@ -15,25 +16,25 @@ namespace IdentityServer.UnitTests.Services.Default
 {
     public class DistributedDeviceFlowThrottlingServiceTests
     {
-        private TestCache cache = new TestCache();
+        private TestCache _cache = new TestCache();
 
-        private readonly IdentityServerOptions options = new IdentityServerOptions {DeviceFlow = new DeviceFlowOptions {Interval = 5}};
-        private readonly DeviceCode deviceCode = new DeviceCode
+        private readonly IdentityServerOptions _options = new IdentityServerOptions {DeviceFlow = new DeviceFlowOptions {Interval = 5}};
+        private readonly DeviceCode _deviceCode = new DeviceCode
         {
             Lifetime = 300,
             CreationTime = DateTime.UtcNow
         };
 
         private const string CacheKey = "devicecode_";
-        private readonly DateTime testDate = new DateTime(2018, 06, 28, 13, 37, 42);
+        private readonly DateTime _testDate = new DateTime(2018, 06, 28, 13, 37, 42);
 
         [Fact]
         public async Task First_Poll()
         {
             var handle = Guid.NewGuid().ToString();
-            var service = new DistributedDeviceFlowThrottlingService(cache, new StubClock {UtcNowFunc = () => testDate}, options);
+            var service = new DistributedDeviceFlowThrottlingService(_cache, new StubClock {UtcNowFunc = () => _testDate}, _options);
 
-            var result = await service.ShouldSlowDown(handle, deviceCode);
+            var result = await service.ShouldSlowDown(handle, _deviceCode);
 
             result.Should().BeFalse();
 
@@ -44,11 +45,11 @@ namespace IdentityServer.UnitTests.Services.Default
         public async Task Second_Poll_Too_Fast()
         {
             var handle = Guid.NewGuid().ToString();
-            var service = new DistributedDeviceFlowThrottlingService(cache, new StubClock { UtcNowFunc = () => testDate }, options);
+            var service = new DistributedDeviceFlowThrottlingService(_cache, new StubClock { UtcNowFunc = () => _testDate }, _options);
 
-            cache.Set(CacheKey + handle, Encoding.UTF8.GetBytes(testDate.AddSeconds(-1).ToString("O")));
+            _cache.Set(CacheKey + handle, Encoding.UTF8.GetBytes(_testDate.AddSeconds(-1).ToString("O")));
 
-            var result = await service.ShouldSlowDown(handle, deviceCode);
+            var result = await service.ShouldSlowDown(handle, _deviceCode);
 
             result.Should().BeTrue();
             
@@ -60,11 +61,11 @@ namespace IdentityServer.UnitTests.Services.Default
         {
             var handle = Guid.NewGuid().ToString();
             
-            var service = new DistributedDeviceFlowThrottlingService(cache, new StubClock { UtcNowFunc = () => testDate }, options);
+            var service = new DistributedDeviceFlowThrottlingService(_cache, new StubClock { UtcNowFunc = () => _testDate }, _options);
 
-            cache.Set($"devicecode_{handle}", Encoding.UTF8.GetBytes(testDate.AddSeconds(-deviceCode.Lifetime - 1).ToString("O")));
+            _cache.Set($"devicecode_{handle}", Encoding.UTF8.GetBytes(_testDate.AddSeconds(-_deviceCode.Lifetime - 1).ToString("O")));
 
-            var result = await service.ShouldSlowDown(handle, deviceCode);
+            var result = await service.ShouldSlowDown(handle, _deviceCode);
 
             result.Should().BeFalse();
 
@@ -78,27 +79,27 @@ namespace IdentityServer.UnitTests.Services.Default
         public async Task Expired_Device_Code_Should_Not_Have_Expiry_in_Past()
         {
             var handle = Guid.NewGuid().ToString();
-            deviceCode.CreationTime = testDate.AddSeconds(-deviceCode.Lifetime * 2);
+            _deviceCode.CreationTime = _testDate.AddSeconds(-_deviceCode.Lifetime * 2);
 
-            var service = new DistributedDeviceFlowThrottlingService(cache, new StubClock { UtcNowFunc = () => testDate }, options);
+            var service = new DistributedDeviceFlowThrottlingService(_cache, new StubClock { UtcNowFunc = () => _testDate }, _options);
 
-            var result = await service.ShouldSlowDown(handle, deviceCode);
+            var result = await service.ShouldSlowDown(handle, _deviceCode);
             
             result.Should().BeFalse();
 
-            cache.Items.TryGetValue(CacheKey + handle, out var values).Should().BeTrue();
-            values?.Item2.AbsoluteExpiration.Should().BeOnOrAfter(testDate);
+            _cache.Items.TryGetValue(CacheKey + handle, out var values).Should().BeTrue();
+            values?.Item2.AbsoluteExpiration.Should().BeOnOrAfter(_testDate);
         }
 
         private void CheckCacheEntry(string handle)
         {
-            cache.Items.TryGetValue(CacheKey + handle, out var values).Should().BeTrue();
+            _cache.Items.TryGetValue(CacheKey + handle, out var values).Should().BeTrue();
 
             var dateTimeAsString = Encoding.UTF8.GetString(values?.Item1);
             var dateTime = DateTime.Parse(dateTimeAsString);
-            dateTime.Should().Be(testDate);
+            dateTime.Should().Be(_testDate);
 
-            values?.Item2.AbsoluteExpiration.Should().BeCloseTo(testDate.AddSeconds(deviceCode.Lifetime));
+            values?.Item2.AbsoluteExpiration.Should().BeCloseTo(_testDate.AddSeconds(_deviceCode.Lifetime), 0.Seconds());
         }
     }
 

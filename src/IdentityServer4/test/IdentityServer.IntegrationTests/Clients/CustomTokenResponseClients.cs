@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
 using IdentityModel;
@@ -241,8 +242,9 @@ namespace IdentityServer.IntegrationTests.Clients
 
             // raw fields
             var fields = GetFields(response);
-            fields.Should().Contain("string_value", "some_string");
-            ((Int64)fields["int_value"]).Should().Be(42);
+            // fields.Should().Contain("string_value", "some_string"); // old statement
+            Assert.Contains(fields, item => "string_value" == item.Key && item.Value.ToString() == "some_string");
+            ((Int64) Convert.ToInt64(fields["int_value"].ToString())).Should().Be(42);
 
             object temp;
             fields.TryGetValue("identity_token", out temp).Should().BeFalse();
@@ -281,7 +283,9 @@ namespace IdentityServer.IntegrationTests.Clients
 
         private Dictionary<string, object> GetFields(TokenResponse response)
         {
-            return response.Json.ToObject<Dictionary<string, object>>();
+            //return response.Json.ToObject<Dictionary<string, object>>(); // TODO remove .netcore3.1
+            //return System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(response.Json);
+            return JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Json.ToString());
         }
 
         private Dictionary<string, object> GetPayload(TokenResponse response)

@@ -147,7 +147,7 @@ namespace IdentityServer.IntegrationTests.Clients
             var scopes = payload["scope"] as JArray;
             scopes.First().ToString().Should().Be("api1");
 
-            var cnf = payload["cnf"] as JObject;
+            var cnf = (JObject) JsonConvert.DeserializeObject((string)payload["cnf"]);
             cnf["x5t#S256"].ToString().Should().Be("foo");
         }
 

@@ -117,7 +117,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task get_request_should_not_return_404()
+        public async Task Get_request_should_not_return_404()
         {
             var response = await _mockPipeline.BrowserClient.GetAsync(IdentityServerPipeline.AuthorizeEndpoint);
 
@@ -126,7 +126,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task post_request_without_form_should_return_415()
+        public async Task Post_request_without_form_should_return_415()
         {
             var response = await _mockPipeline.BrowserClient.PostAsync(IdentityServerPipeline.AuthorizeEndpoint, new StringContent("foo"));
 
@@ -135,7 +135,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task post_request_should_return_200()
+        public async Task Post_request_should_return_200()
         {
             var response = await _mockPipeline.BrowserClient.PostAsync(IdentityServerPipeline.AuthorizeEndpoint,
                 new FormUrlEncodedContent(
@@ -146,7 +146,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task get_request_should_not_return_500()
+        public async Task Get_request_should_not_return_500()
         {
             var response = await _mockPipeline.BrowserClient.GetAsync(IdentityServerPipeline.AuthorizeEndpoint);
 
@@ -155,7 +155,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task anonymous_user_should_be_redirected_to_login_page()
+        public async Task Anonymous_user_should_be_redirected_to_login_page()
         {
             var url = _mockPipeline.CreateAuthorizeUrl(
                 clientId: "client1",
@@ -174,7 +174,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
         [InlineData(typeof(QueryStringAuthorizationParametersMessageStore))]
         [InlineData(typeof(DistributedCacheAuthorizationParametersMessageStore))]
         [Trait("Category", Category)]
-        public async Task signin_request_should_have_authorization_params(Type storeType)
+        public async Task Signin_request_should_have_authorization_params(Type storeType)
         {
             if (storeType != null)
             {
@@ -216,7 +216,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task signin_response_should_allow_successful_authorization_response()
+        public async Task Signin_response_should_allow_successful_authorization_response()
         {
             _mockPipeline.Subject = new IdentityServerUser("bob").CreatePrincipal();
             _mockPipeline.BrowserClient.StopRedirectingAfter = 2;
@@ -241,7 +241,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task authenticated_user_with_valid_request_should_receive_authorization_response()
+        public async Task Authenticated_user_with_valid_request_should_receive_authorization_response()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -270,7 +270,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
         [InlineData(typeof(QueryStringAuthorizationParametersMessageStore))]
         [InlineData(typeof(DistributedCacheAuthorizationParametersMessageStore))]
         [Trait("Category", Category)]
-        public async Task login_response_and_consent_response_should_receive_authorization_response(Type storeType)
+        public async Task Login_response_and_consent_response_should_receive_authorization_response(Type storeType)
         {
             if (storeType != null)
             {
@@ -312,7 +312,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task idp_should_be_passed_to_login_page()
+        public async Task Idp_should_be_passed_to_login_page()
         {
             var url = _mockPipeline.CreateAuthorizeUrl(
                 clientId: "client3",
@@ -330,7 +330,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task idp_not_allowed_by_client_should_not_be_passed_to_login_page()
+        public async Task Idp_not_allowed_by_client_should_not_be_passed_to_login_page()
         {
             var url = _mockPipeline.CreateAuthorizeUrl(
                 clientId: "client3",
@@ -348,7 +348,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task user_idp_not_allowed_by_client_should_cause_login_page()
+        public async Task User_idp_not_allowed_by_client_should_cause_login_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -367,7 +367,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task for_invalid_client_error_page_should_not_receive_client_id()
+        public async Task For_invalid_client_error_page_should_not_receive_client_id()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -386,7 +386,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task error_page_should_receive_client_id()
+        public async Task Error_page_should_receive_client_id()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -405,7 +405,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task invalid_redirect_uri_should_show_error_page()
+        public async Task Invalid_redirect_uri_should_show_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -425,7 +425,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task invalid_redirect_uri_should_not_pass_return_url_to_error_page()
+        public async Task Invalid_redirect_uri_should_not_pass_return_url_to_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -445,7 +445,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task invalid_client_id_should_show_error_page()
+        public async Task Invalid_client_id_should_show_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -464,7 +464,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task invalid_client_id_should_not_pass_return_url_to_error_page()
+        public async Task Invalid_client_id_should_not_pass_return_url_to_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -484,7 +484,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task missing_redirect_uri_should_show_error_page()
+        public async Task Missing_redirect_uri_should_show_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -504,7 +504,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task missing_redirect_uri_should_not_pass_return_url_to_error_page()
+        public async Task Missing_redirect_uri_should_not_pass_return_url_to_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -524,7 +524,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task malformed_redirect_uri_should_show_error_page()
+        public async Task Malformed_redirect_uri_should_show_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -544,7 +544,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task disabled_client_should_show_error_page()
+        public async Task Disabled_client_should_show_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -565,7 +565,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task disabled_client_should_not_pass_return_url_to_error_page()
+        public async Task Disabled_client_should_not_pass_return_url_to_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -587,7 +587,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task invalid_protocol_for_client_should_show_error_page()
+        public async Task Invalid_protocol_for_client_should_show_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -609,7 +609,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task invalid_protocol_for_client_should_not_pass_return_url_to_error_page()
+        public async Task Invalid_protocol_for_client_should_not_pass_return_url_to_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -631,7 +631,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task invalid_response_type_should_show_error_page()
+        public async Task Invalid_response_type_should_show_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -650,7 +650,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task invalid_response_type_should_not_pass_return_url_to_error_page()
+        public async Task Invalid_response_type_should_not_pass_return_url_to_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -670,7 +670,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task invalid_response_mode_for_flow_should_show_error_page()
+        public async Task Invalid_response_mode_for_flow_should_show_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -691,7 +691,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task invalid_response_mode_for_flow_should_pass_return_url_to_error_page()
+        public async Task Invalid_response_mode_for_flow_should_pass_return_url_to_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -712,7 +712,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task invalid_response_mode_should_show_error_page()
+        public async Task Invalid_response_mode_should_show_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -733,7 +733,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task invalid_response_mode_should_pass_return_url_to_error_page()
+        public async Task Invalid_response_mode_should_pass_return_url_to_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -754,7 +754,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task missing_scope_should_show_error_page()
+        public async Task Missing_scope_should_show_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -774,7 +774,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task missing_scope_should_pass_return_url_to_error_page()
+        public async Task Missing_scope_should_pass_return_url_to_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -794,7 +794,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task explicit_response_mode_should_be_passed_to_error_page()
+        public async Task Explicit_response_mode_should_be_passed_to_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -815,7 +815,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task scope_too_long_should_show_error_page()
+        public async Task Scope_too_long_should_show_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -837,7 +837,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task missing_openid_scope_should_show_error_page()
+        public async Task Missing_openid_scope_should_show_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -860,7 +860,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task client_not_allowed_access_to_scope_should_show_error_page()
+        public async Task Client_not_allowed_access_to_scope_should_show_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -882,7 +882,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task missing_nonce_should_show_error_page()
+        public async Task Missing_nonce_should_show_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -905,7 +905,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task nonce_too_long_should_show_error_page()
+        public async Task Nonce_too_long_should_show_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -927,7 +927,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task locale_too_long_should_show_error_page()
+        public async Task Locale_too_long_should_show_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -950,7 +950,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task invalid_max_age_should_show_error_page()
+        public async Task Invalid_max_age_should_show_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -973,7 +973,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task negative_max_age_should_show_error_page()
+        public async Task Negative_max_age_should_show_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -996,7 +996,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task login_hint_too_long_should_show_error_page()
+        public async Task Login_hint_too_long_should_show_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -1019,7 +1019,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task acr_values_too_long_should_show_error_page()
+        public async Task Acr_values_too_long_should_show_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -1042,7 +1042,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task overlapping_identity_scopes_and_api_scopes_should_show_error_page()
+        public async Task Overlapping_identity_scopes_and_api_scopes_should_show_error_page()
         {
             _mockPipeline.IdentityScopes.Add(new IdentityResource("foo", "Foo", new string[] { "name" }));
             _mockPipeline.IdentityScopes.Add(new IdentityResource("bar", "Bar", new string[] { "name" }));
@@ -1060,12 +1060,12 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
                 nonce: "123_nonce");
 
             Func<Task> a = () => _mockPipeline.BrowserClient.GetAsync(url);
-            a.Should().Throw<Exception>();
+            await a.Should().ThrowAsync<Exception>();
         }
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task ui_locales_should_be_passed_to_error_page()
+        public async Task Ui_locales_should_be_passed_to_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -1086,7 +1086,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task display_mode_should_be_passed_to_error_page()
+        public async Task Display_mode_should_be_passed_to_error_page()
         {
             await _mockPipeline.LoginAsync("bob");
 
@@ -1107,7 +1107,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task unicode_values_in_url_should_be_processed_correctly()
+        public async Task Unicode_values_in_url_should_be_processed_correctly()
         {
             var url = _mockPipeline.CreateAuthorizeUrl(
                 clientId: "client1",
@@ -1124,7 +1124,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task code_flow_with_fragment_response_type_should_be_allowed()
+        public async Task Code_flow_with_fragment_response_type_should_be_allowed()
         {
             var url = _mockPipeline.CreateAuthorizeUrl(
                 clientId: "client4",
@@ -1142,7 +1142,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task prompt_login_should_show_login_page()
+        public async Task Prompt_login_should_show_login_page()
         {
             await _mockPipeline.LoginAsync("bob");
 

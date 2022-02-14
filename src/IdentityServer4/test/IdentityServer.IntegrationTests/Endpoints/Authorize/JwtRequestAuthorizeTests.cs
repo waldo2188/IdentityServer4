@@ -191,7 +191,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
         
         [Fact]
         [Trait("Category", Category)]
-        public async Task missing_request_object_should_fail()
+        public async Task Missing_request_object_should_fail()
         {
             var url = _mockPipeline.CreateAuthorizeUrl(
                 clientId: _client.ClientId,
@@ -210,7 +210,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task authorize_should_accept_valid_JWT_request_object_parameters_using_X509_certificate()
+        public async Task Authorize_should_accept_valid_JWT_request_object_parameters_using_X509_certificate()
         {
             var requestJwt = CreateRequestJwt(
                 issuer: _client.ClientId,
@@ -258,7 +258,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task authorize_should_accept_valid_JWT_request_object_parameters_using_symmetric_jwk()
+        public async Task Authorize_should_accept_valid_JWT_request_object_parameters_using_symmetric_jwk()
         {
             var requestJwt = CreateRequestJwt(
                 issuer: _client.ClientId,
@@ -306,7 +306,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task authorize_should_accept_valid_JWT_request_object_parameters_using_rsa_jwk()
+        public async Task Authorize_should_accept_valid_JWT_request_object_parameters_using_rsa_jwk()
         {
             var requestJwt = CreateRequestJwt(
                 issuer: _client.ClientId,
@@ -354,7 +354,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
         
         [Fact]
         [Trait("Category", Category)]
-        public async Task correct_jwt_typ_should_pass_strict_validation()
+        public async Task Correct_jwt_typ_should_pass_strict_validation()
         {
             _mockPipeline.Options.StrictJarValidation = true;
             
@@ -404,7 +404,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
         
         [Fact]
         [Trait("Category", Category)]
-        public async Task missing_jwt_typ_should_error()
+        public async Task Missing_jwt_typ_should_error()
         {
             _mockPipeline.Options.StrictJarValidation = true;
             
@@ -441,7 +441,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
         
         [Fact]
         [Trait("Category", Category)]
-        public async Task mismatch_in_jwt_values_should_error()
+        public async Task Mismatch_in_jwt_values_should_error()
         {
             var requestJwt = CreateRequestJwt(
                 issuer: _client.ClientId,
@@ -484,9 +484,16 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
             _mockPipeline.LoginRequest.Should().BeNull();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// Claim managed by IdentityModel are only string => string and can not be string => object
+        /// </remarks>
+        /// <returns></returns>
         [Fact]
         [Trait("Category", Category)]
-        public async Task authorize_should_accept_complex_objects_in_request_object()
+        public async Task Authorize_should_not_accept_complex_objects_in_request_object()
         {
             var someObj = new { foo = new { bar = "bar" }, baz = "baz" };
             var someObjJson = JsonConvert.SerializeObject(someObj);
@@ -510,6 +517,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
                     new Claim("display", "popup"),
                     new Claim("ui_locales", "ui_locale_value"),
                     new Claim("foo", "123foo"),
+                    new Claim("someObj", "yolo"),
                     new Claim("someObj", someObjJson, Microsoft.IdentityModel.JsonWebTokens.JsonClaimValueTypes.Json),
                     new Claim("someArr", someArrJson, Microsoft.IdentityModel.JsonWebTokens.JsonClaimValueTypes.JsonArray),
             });
@@ -525,27 +533,14 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
             _mockPipeline.LoginRequest.Should().NotBeNull();
 
-            _mockPipeline.LoginRequest.Parameters["someObj"].Should().NotBeNull();
-            var someObj2 = JsonConvert.DeserializeObject(_mockPipeline.LoginRequest.Parameters["someObj"], someObj.GetType());
-            someObj.Should().BeEquivalentTo(someObj2);
-            _mockPipeline.LoginRequest.Parameters["someArr"].Should().NotBeNull();
-            var someArr2 = JsonConvert.DeserializeObject<string[]>(_mockPipeline.LoginRequest.Parameters["someArr"]);
-            someArr2.Should().Contain(new[] { "a", "c", "b" });
-            someArr2.Length.Should().Be(3);
 
-            _mockPipeline.LoginRequest.RequestObjectValues.Count.Should().Be(13);
-            _mockPipeline.LoginRequest.RequestObjectValues["someObj"].Should().NotBeNull();
-            someObj2 = JsonConvert.DeserializeObject(_mockPipeline.LoginRequest.RequestObjectValues["someObj"], someObj.GetType());
-            someObj.Should().BeEquivalentTo(someObj2);
-            _mockPipeline.LoginRequest.RequestObjectValues["someArr"].Should().NotBeNull();
-            someArr2 = JsonConvert.DeserializeObject<string[]>(_mockPipeline.LoginRequest.Parameters["someArr"]);
-            someArr2.Should().Contain(new[] { "a", "c", "b" });
-            someArr2.Length.Should().Be(3);
+            _mockPipeline.LoginRequest.Parameters["someObj"].Should().BeNull();
+            _mockPipeline.LoginRequest.Parameters["someArr"].Should().BeNull();
         }
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task authorize_should_reject_jwt_request_without_client_id()
+        public async Task Authorize_should_reject_jwt_request_without_client_id()
         {
             var requestJwt = CreateRequestJwt(
                 issuer: _client.ClientId,
@@ -579,7 +574,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
         
         [Fact]
         [Trait("Category", Category)]
-        public async Task authorize_should_reject_jwt_request_without_client_id_in_jwt()
+        public async Task Authorize_should_reject_jwt_request_without_client_id_in_jwt()
         {
             var requestJwt = CreateRequestJwt(
                 issuer: _client.ClientId,
@@ -614,7 +609,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task authorize_should_reject_jwt_request_if_audience_is_incorrect()
+        public async Task Authorize_should_reject_jwt_request_if_audience_is_incorrect()
         {
             var requestJwt = CreateRequestJwt(
                 issuer: _client.ClientId,
@@ -651,7 +646,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task authorize_should_reject_jwt_request_if_issuer_does_not_match_client_id()
+        public async Task Authorize_should_reject_jwt_request_if_issuer_does_not_match_client_id()
         {
             var requestJwt = CreateRequestJwt(
                 issuer: "invalid",
@@ -688,7 +683,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task authorize_should_reject_jwt_request_that_includes_request_param()
+        public async Task Authorize_should_reject_jwt_request_that_includes_request_param()
         {
             var requestJwt = CreateRequestJwt(
                 issuer: _client.ClientId,
@@ -725,7 +720,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task authorize_should_reject_jwt_request_that_includes_request_uri_param()
+        public async Task Authorize_should_reject_jwt_request_that_includes_request_uri_param()
         {
             var requestJwt = CreateRequestJwt(
                 issuer: _client.ClientId,
@@ -762,7 +757,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task authorize_should_reject_jwt_request_if_response_type_does_not_match()
+        public async Task Authorize_should_reject_jwt_request_if_response_type_does_not_match()
         {
             var requestJwt = CreateRequestJwt(
                 issuer: _client.ClientId,
@@ -798,7 +793,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task authorize_should_reject_jwt_request_if_client_id_does_not_match()
+        public async Task Authorize_should_reject_jwt_request_if_client_id_does_not_match()
         {
             var requestJwt = CreateRequestJwt(
                 issuer: _client.ClientId,
@@ -835,7 +830,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
         
         [Fact]
         [Trait("Category", Category)]
-        public async Task authorize_should_ignore_request_uri_when_feature_is_disabled()
+        public async Task Authorize_should_ignore_request_uri_when_feature_is_disabled()
         {
             _mockPipeline.Options.Endpoints.EnableJwtRequestUri = false;
 
@@ -879,7 +874,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task authorize_should_accept_request_uri_with_valid_jwt()
+        public async Task Authorize_should_accept_request_uri_with_valid_jwt()
         {
             _mockPipeline.Options.Endpoints.EnableJwtRequestUri = true;
 
@@ -933,7 +928,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
         
         [Fact]
         [Trait("Category", Category)]
-        public async Task authorize_should_accept_request_uri_with_valid_jwt_and_strict_validation()
+        public async Task Authorize_should_accept_request_uri_with_valid_jwt_and_strict_validation()
         {
             _mockPipeline.Options.Endpoints.EnableJwtRequestUri = true;
             _mockPipeline.Options.StrictJarValidation = true;
@@ -989,7 +984,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
         
         [Fact]
         [Trait("Category", Category)]
-        public async Task authorize_should_reject_request_uri_with_valid_jwt_and_strict_validation_but_invalid_content_type()
+        public async Task Authorize_should_reject_request_uri_with_valid_jwt_and_strict_validation_but_invalid_content_type()
         {
             _mockPipeline.Options.Endpoints.EnableJwtRequestUri = true;
             _mockPipeline.Options.StrictJarValidation = true;
@@ -1035,7 +1030,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
         
         [Fact]
         [Trait("Category", Category)]
-        public async Task request_uri_response_returns_500_should_fail()
+        public async Task Request_uri_response_returns_500_should_fail()
         {
             _mockPipeline.Options.Endpoints.EnableJwtRequestUri = true;
 
@@ -1058,7 +1053,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task request_uri_response_returns_404_should_fail()
+        public async Task Request_uri_response_returns_404_should_fail()
         {
             _mockPipeline.Options.Endpoints.EnableJwtRequestUri = true;
 
@@ -1081,7 +1076,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task request_uri_length_too_long_should_fail()
+        public async Task Request_uri_length_too_long_should_fail()
         {
             _mockPipeline.Options.Endpoints.EnableJwtRequestUri = true;
 
@@ -1101,7 +1096,7 @@ namespace IdentityServer.IntegrationTests.Endpoints.Authorize
 
         [Fact]
         [Trait("Category", Category)]
-        public async Task both_request_and_request_uri_params_should_fail()
+        public async Task Both_request_and_request_uri_params_should_fail()
         {
             _mockPipeline.Options.Endpoints.EnableJwtRequestUri = true;
 

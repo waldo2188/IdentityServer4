@@ -22,68 +22,68 @@ namespace IdentityServer.UnitTests.ResponseHandling
 {
     public class DeviceAuthorizationResponseGeneratorTests
     {
-        private readonly List<IdentityResource> identityResources = new List<IdentityResource> {new IdentityResources.OpenId(), new IdentityResources.Profile()};
-        private readonly List<ApiResource> apiResources = new List<ApiResource> { new ApiResource("resource") { Scopes = {"api1" } } };
-        private readonly List<ApiScope> scopes = new List<ApiScope> { new ApiScope("api1") };
+        private readonly List<IdentityResource> _identityResources = new List<IdentityResource> {new IdentityResources.OpenId(), new IdentityResources.Profile()};
+        private readonly List<ApiResource> _apiResources = new List<ApiResource> { new ApiResource("resource") { Scopes = {"api1" } } };
+        private readonly List<ApiScope> _scopes = new List<ApiScope> { new ApiScope("api1") };
 
-        private readonly FakeUserCodeGenerator fakeUserCodeGenerator = new FakeUserCodeGenerator();
-        private readonly IDeviceFlowCodeService deviceFlowCodeService = new DefaultDeviceFlowCodeService(new InMemoryDeviceFlowStore(), new StubHandleGenerationService());
-        private readonly IdentityServerOptions options = new IdentityServerOptions();
-        private readonly StubClock clock = new StubClock();
+        private readonly FakeUserCodeGenerator _fakeUserCodeGenerator = new FakeUserCodeGenerator();
+        private readonly IDeviceFlowCodeService _deviceFlowCodeService = new DefaultDeviceFlowCodeService(new InMemoryDeviceFlowStore(), new StubHandleGenerationService());
+        private readonly IdentityServerOptions _options = new IdentityServerOptions();
+        private readonly StubClock _clock = new StubClock();
         
-        private readonly DeviceAuthorizationResponseGenerator generator;
-        private readonly DeviceAuthorizationRequestValidationResult testResult;
+        private readonly DeviceAuthorizationResponseGenerator _generator;
+        private readonly DeviceAuthorizationRequestValidationResult _testResult;
         private const string TestBaseUrl = "http://localhost:5000/";
 
         public DeviceAuthorizationResponseGeneratorTests()
         {
-            testResult = new DeviceAuthorizationRequestValidationResult(new ValidatedDeviceAuthorizationRequest
+            _testResult = new DeviceAuthorizationRequestValidationResult(new ValidatedDeviceAuthorizationRequest
             {
                 Client = new Client {ClientId = Guid.NewGuid().ToString()},
                 IsOpenIdRequest = true,
                 ValidatedResources = new ResourceValidationResult()
             });
 
-            generator = new DeviceAuthorizationResponseGenerator(
-                options,
-                new DefaultUserCodeService(new IUserCodeGenerator[] {new NumericUserCodeGenerator(), fakeUserCodeGenerator }),
-                deviceFlowCodeService,
-                clock,
+            _generator = new DeviceAuthorizationResponseGenerator(
+                _options,
+                new DefaultUserCodeService(new IUserCodeGenerator[] {new NumericUserCodeGenerator(), _fakeUserCodeGenerator }),
+                _deviceFlowCodeService,
+                _clock,
                 new NullLogger<DeviceAuthorizationResponseGenerator>());
         }
 
         [Fact]
         public void ProcessAsync_when_valiationresult_null_exect_exception()
         {
-            Func<Task> act = () => generator.ProcessAsync(null, TestBaseUrl);
-            act.Should().Throw<ArgumentNullException>();
+            Func<Task> act = () => _generator.ProcessAsync(null, TestBaseUrl);
+            act.Should().ThrowAsync<ArgumentNullException>();
         }
 
         [Fact]
         public void ProcessAsync_when_valiationresult_client_null_exect_exception()
         {
             var validationResult = new DeviceAuthorizationRequestValidationResult(new ValidatedDeviceAuthorizationRequest());
-            Func <Task> act = () => generator.ProcessAsync(validationResult, TestBaseUrl);
-            act.Should().Throw<ArgumentNullException>();
+            Func <Task> act = () => _generator.ProcessAsync(validationResult, TestBaseUrl);
+            act.Should().ThrowAsync<ArgumentNullException>();
         }
 
         [Fact]
         public void ProcessAsync_when_baseurl_null_exect_exception()
         {
-            Func<Task> act = () => generator.ProcessAsync(testResult, null);
-            act.Should().Throw<ArgumentException>();
+            Func<Task> act = () => _generator.ProcessAsync(_testResult, null);
+            act.Should().ThrowAsync<ArgumentException>();
         }
 
         [Fact]
         public async Task ProcessAsync_when_user_code_collision_expect_retry()
         {
             var creationTime = DateTime.UtcNow;
-            clock.UtcNowFunc = () => creationTime;
+            _clock.UtcNowFunc = () => creationTime;
 
-            testResult.ValidatedRequest.Client.UserCodeType = FakeUserCodeGenerator.UserCodeTypeValue;
-            await deviceFlowCodeService.StoreDeviceAuthorizationAsync(FakeUserCodeGenerator.TestCollisionUserCode, new DeviceCode());
+            _testResult.ValidatedRequest.Client.UserCodeType = FakeUserCodeGenerator.UserCodeTypeValue;
+            await _deviceFlowCodeService.StoreDeviceAuthorizationAsync(FakeUserCodeGenerator.TestCollisionUserCode, new DeviceCode());
 
-            var response = await generator.ProcessAsync(testResult, TestBaseUrl);
+            var response = await _generator.ProcessAsync(_testResult, TestBaseUrl);
 
             response.UserCode.Should().Be(FakeUserCodeGenerator.TestUniqueUserCode);
         }
@@ -92,58 +92,58 @@ namespace IdentityServer.UnitTests.ResponseHandling
         public async Task ProcessAsync_when_user_code_collision_retry_limit_reached_expect_error()
         {
             var creationTime = DateTime.UtcNow;
-            clock.UtcNowFunc = () => creationTime;
+            _clock.UtcNowFunc = () => creationTime;
 
-            fakeUserCodeGenerator.RetryLimit = 1;
-            testResult.ValidatedRequest.Client.UserCodeType = FakeUserCodeGenerator.UserCodeTypeValue;
-            await deviceFlowCodeService.StoreDeviceAuthorizationAsync(FakeUserCodeGenerator.TestCollisionUserCode, new DeviceCode());
+            _fakeUserCodeGenerator.RetryLimit = 1;
+            _testResult.ValidatedRequest.Client.UserCodeType = FakeUserCodeGenerator.UserCodeTypeValue;
+            await _deviceFlowCodeService.StoreDeviceAuthorizationAsync(FakeUserCodeGenerator.TestCollisionUserCode, new DeviceCode());
 
-            await Assert.ThrowsAsync<InvalidOperationException>(() => generator.ProcessAsync(testResult, TestBaseUrl));
+            await Assert.ThrowsAsync<InvalidOperationException>(() => _generator.ProcessAsync(_testResult, TestBaseUrl));
         }
 
         [Fact]
         public async Task ProcessAsync_when_generated_expect_user_code_stored()
         {
             var creationTime = DateTime.UtcNow;
-            clock.UtcNowFunc = () => creationTime;
+            _clock.UtcNowFunc = () => creationTime;
 
-            testResult.ValidatedRequest.RequestedScopes = new List<string> { "openid", "api1" };
-            testResult.ValidatedRequest.ValidatedResources = new ResourceValidationResult(new Resources(
-                identityResources.Where(x=>x.Name == "openid"), 
-                apiResources.Where(x=>x.Name == "resource"), 
-                scopes.Where(x=>x.Name == "api1")));
+            _testResult.ValidatedRequest.RequestedScopes = new List<string> { "openid", "api1" };
+            _testResult.ValidatedRequest.ValidatedResources = new ResourceValidationResult(new Resources(
+                _identityResources.Where(x=>x.Name == "openid"), 
+                _apiResources.Where(x=>x.Name == "resource"), 
+                _scopes.Where(x=>x.Name == "api1")));
 
-            var response = await generator.ProcessAsync(testResult, TestBaseUrl);
+            var response = await _generator.ProcessAsync(_testResult, TestBaseUrl);
 
             response.UserCode.Should().NotBeNullOrWhiteSpace();
 
-            var userCode = await deviceFlowCodeService.FindByUserCodeAsync(response.UserCode);
+            var userCode = await _deviceFlowCodeService.FindByUserCodeAsync(response.UserCode);
             userCode.Should().NotBeNull();
-            userCode.ClientId.Should().Be(testResult.ValidatedRequest.Client.ClientId);
-            userCode.Lifetime.Should().Be(testResult.ValidatedRequest.Client.DeviceCodeLifetime);
+            userCode.ClientId.Should().Be(_testResult.ValidatedRequest.Client.ClientId);
+            userCode.Lifetime.Should().Be(_testResult.ValidatedRequest.Client.DeviceCodeLifetime);
             userCode.CreationTime.Should().Be(creationTime);
             userCode.Subject.Should().BeNull();
             userCode.AuthorizedScopes.Should().BeNull();
 
-            userCode.RequestedScopes.Should().Contain(testResult.ValidatedRequest.RequestedScopes);
+            userCode.RequestedScopes.Should().Contain(_testResult.ValidatedRequest.RequestedScopes);
         }
 
         [Fact]
         public async Task ProcessAsync_when_generated_expect_device_code_stored()
         {
             var creationTime = DateTime.UtcNow;
-            clock.UtcNowFunc = () => creationTime;
+            _clock.UtcNowFunc = () => creationTime;
 
-            var response = await generator.ProcessAsync(testResult, TestBaseUrl);
+            var response = await _generator.ProcessAsync(_testResult, TestBaseUrl);
 
             response.DeviceCode.Should().NotBeNullOrWhiteSpace();
-            response.Interval.Should().Be(options.DeviceFlow.Interval);
+            response.Interval.Should().Be(_options.DeviceFlow.Interval);
             
-            var deviceCode = await deviceFlowCodeService.FindByDeviceCodeAsync(response.DeviceCode);
+            var deviceCode = await _deviceFlowCodeService.FindByDeviceCodeAsync(response.DeviceCode);
             deviceCode.Should().NotBeNull();
-            deviceCode.ClientId.Should().Be(testResult.ValidatedRequest.Client.ClientId);
-            deviceCode.IsOpenId.Should().Be(testResult.ValidatedRequest.IsOpenIdRequest);
-            deviceCode.Lifetime.Should().Be(testResult.ValidatedRequest.Client.DeviceCodeLifetime);
+            deviceCode.ClientId.Should().Be(_testResult.ValidatedRequest.Client.ClientId);
+            deviceCode.IsOpenId.Should().Be(_testResult.ValidatedRequest.IsOpenIdRequest);
+            deviceCode.Lifetime.Should().Be(_testResult.ValidatedRequest.Client.DeviceCodeLifetime);
             deviceCode.CreationTime.Should().Be(creationTime);
             deviceCode.Subject.Should().BeNull();
             deviceCode.AuthorizedScopes.Should().BeNull();
@@ -155,10 +155,10 @@ namespace IdentityServer.UnitTests.ResponseHandling
         public async Task ProcessAsync_when_DeviceVerificationUrl_is_relative_uri_expect_correct_VerificationUris()
         {
             const string baseUrl = "http://localhost:5000/";
-            options.UserInteraction.DeviceVerificationUrl = "/device";
-            options.UserInteraction.DeviceVerificationUserCodeParameter = "userCode";
+            _options.UserInteraction.DeviceVerificationUrl = "/device";
+            _options.UserInteraction.DeviceVerificationUserCodeParameter = "userCode";
 
-            var response = await generator.ProcessAsync(testResult, baseUrl);
+            var response = await _generator.ProcessAsync(_testResult, baseUrl);
 
             response.VerificationUri.Should().Be("http://localhost:5000/device");
             response.VerificationUriComplete.Should().StartWith("http://localhost:5000/device?userCode=");
@@ -168,10 +168,10 @@ namespace IdentityServer.UnitTests.ResponseHandling
         public async Task ProcessAsync_when_DeviceVerificationUrl_is_absolute_uri_expect_correct_VerificationUris()
         {
             const string baseUrl = "http://localhost:5000/";
-            options.UserInteraction.DeviceVerificationUrl = "http://short/device";
-            options.UserInteraction.DeviceVerificationUserCodeParameter = "userCode";
+            _options.UserInteraction.DeviceVerificationUrl = "http://short/device";
+            _options.UserInteraction.DeviceVerificationUserCodeParameter = "userCode";
 
-            var response = await generator.ProcessAsync(testResult, baseUrl);
+            var response = await _generator.ProcessAsync(_testResult, baseUrl);
 
             response.VerificationUri.Should().Be("http://short/device");
             response.VerificationUriComplete.Should().StartWith("http://short/device?userCode=");
@@ -183,27 +183,27 @@ namespace IdentityServer.UnitTests.ResponseHandling
         public const string UserCodeTypeValue = "Collider";
         public const string TestUniqueUserCode = "123";
         public const string TestCollisionUserCode = "321";
-        private int tryCount = 0;
-        private int retryLimit = 2;
+        private int _tryCount = 0;
+        private int _retryLimit = 2;
 
 
         public string UserCodeType => UserCodeTypeValue;
 
         public int RetryLimit
         {
-            get => retryLimit;
-            set => retryLimit = value;
+            get => _retryLimit;
+            set => _retryLimit = value;
         }
 
         public Task<string> GenerateAsync()
         {
-            if (tryCount == 0)
+            if (_tryCount == 0)
             {
-                tryCount++;
+                _tryCount++;
                 return Task.FromResult(TestCollisionUserCode);
             }
 
-            tryCount++;
+            _tryCount++;
             return Task.FromResult(TestUniqueUserCode);
         }
     }

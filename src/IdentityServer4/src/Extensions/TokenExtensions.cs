@@ -107,8 +107,8 @@ namespace IdentityServer4.Extensions
                     }
                     else
                     {
-                        // add just one
-                        payload.Add(group.Key, group.First().JsonValue);
+                        // A claim value MUST be a string
+                        payload.Add(group.Key, group.First().JsonValue.ToString());
                     }
                 }
 

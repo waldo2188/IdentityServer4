@@ -45,7 +45,9 @@ namespace IdentityServer.IntegrationTests.Clients
             });
 
             var fields = GetFields(response);
-            fields.Should().Contain("custom", "custom");
+            Assert.Contains(fields, item => "custom" == item.Key && item.Value.ToString() == "custom");
+            //fields.Should().Contain("custom", "custom"); // Old statement
+            
         }
 
         [Fact]
@@ -64,7 +66,8 @@ namespace IdentityServer.IntegrationTests.Clients
             });
 
             var fields = GetFields(response);
-            fields.Should().Contain("custom", "custom");
+            // fields.Should().Contain("custom", "custom"); // Old statement
+            Assert.Contains(fields, item => "custom" == item.Key && item.Value.ToString() == "custom");
         }
 
         [Fact]
@@ -92,7 +95,8 @@ namespace IdentityServer.IntegrationTests.Clients
             });
 
             var fields = GetFields(response);
-            fields.Should().Contain("custom", "custom");
+            // fields.Should().Contain("custom", "custom"); // old statement
+            Assert.Contains(fields, item => "custom" == item.Key && item.Value.ToString() == "custom");
         }
 
         [Fact]
@@ -114,12 +118,14 @@ namespace IdentityServer.IntegrationTests.Clients
             });
 
             var fields = GetFields(response);
-            fields.Should().Contain("custom", "custom");
+            //fields.Should().Contain("custom", "custom"); // Old statement
+            Assert.Contains(fields, item => "custom" == item.Key && item.Value.ToString() == "custom");
         }
 
         private Dictionary<string, object> GetFields(TokenResponse response)
         {
-            return response.Json.ToObject<Dictionary<string, object>>();
+            return System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(response.Json);
+            // return response.Json.ToObject<Dictionary<string, object>>(); // TODO remove .netcore3.1
         }
     }
 }

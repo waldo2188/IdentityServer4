@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using static Bullseye.Targets;
@@ -33,7 +33,7 @@ namespace build
 
             Target(Targets.Build, DependsOn(Targets.CleanBuildOutput), () =>
             {
-                Run("dotnet", "build -c Release --nologo", echoPrefix: Prefix);
+                Run("dotnet", "build -c Release --nologo", logPrefix: Prefix);
             });
 
             Target(Targets.SignBinary, DependsOn(Targets.Build), () =>
@@ -43,7 +43,7 @@ namespace build
 
             Target(Targets.Test, DependsOn(Targets.Build), () =>
             {
-                Run("dotnet", $"test -c Release --no-build", echoPrefix: Prefix);
+                Run("dotnet", $"test -c Release --no-build", logPrefix: Prefix);
             });
 
             Target(Targets.CleanPackOutput, () =>
@@ -58,7 +58,7 @@ namespace build
             {
                 var project = Directory.GetFiles("./src", "*.csproj", SearchOption.TopDirectoryOnly).OrderBy(_ => _).First();
 
-                Run("dotnet", $"pack {project} -c Release -o \"{Directory.CreateDirectory(packOutput).FullName}\" --no-build --nologo", echoPrefix: Prefix);
+                Run("dotnet", $"pack {project} -c Release -o \"{Directory.CreateDirectory(packOutput).FullName}\" --no-build --nologo", logPrefix: Prefix);
             });
 
             Target(Targets.SignPackage, DependsOn(Targets.Pack), () =>
@@ -82,7 +82,7 @@ namespace build
 
             Target("sign", DependsOn(Targets.SignBinary, Targets.Test, Targets.SignPackage, Targets.CopyPackOutput));
 
-            RunTargetsAndExit(args, ex => ex is SimpleExec.NonZeroExitCodeException || ex.Message.EndsWith(envVarMissing), Prefix);
+            RunTargetsAndExit(args, ex => ex is SimpleExec.ExitCodeException || ex.Message.EndsWith(envVarMissing), Prefix);
         }
 
         private static void Sign(string path, string searchTerm)
