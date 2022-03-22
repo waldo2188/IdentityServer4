@@ -97,7 +97,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             {
                 ClientId = "device_flow",
                 RequestedScopes = new[] { "openid", "api1" },
-                CreationTime = new DateTime(2018, 10, 19, 16, 14, 29),
+                CreationTime = new DateTime(2018, 10, 19, 16, 14, 29, DateTimeKind.Utc),
                 Lifetime = 300,
                 IsOpenId = true,
                 Subject = new ClaimsPrincipal(new ClaimsIdentity(
@@ -140,7 +140,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             {
                 ClientId = "device_flow",
                 RequestedScopes = new[] { "openid", "api1" },
-                CreationTime = new DateTime(2018, 10, 19, 16, 14, 29),
+                CreationTime = new DateTime(2018, 10, 19, 16, 14, 29, DateTimeKind.Utc),
                 Lifetime = 300,
                 IsOpenId = true,
                 Subject = new ClaimsPrincipal(new ClaimsIdentity(
@@ -186,7 +186,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             {
                 ClientId = "device_flow",
                 RequestedScopes = new[] { "openid", "api1" },
-                CreationTime = new DateTime(2018, 10, 19, 16, 14, 29),
+                CreationTime = new DateTime(2018, 10, 19, 16, 14, 29, DateTimeKind.Utc),
                 Lifetime = 300,
                 IsOpenId = true,
                 Subject = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim> { new Claim(JwtClaimTypes.Subject, expectedSubject) }))
@@ -242,7 +242,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             {
                 ClientId = "device_flow",
                 RequestedScopes = new[] { "openid", "api1" },
-                CreationTime = new DateTime(2018, 10, 19, 16, 14, 29),
+                CreationTime = new DateTime(2018, 10, 19, 16, 14, 29, DateTimeKind.Utc),
                 Lifetime = 300,
                 IsOpenId = true,
                 Subject = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim> { new Claim(JwtClaimTypes.Subject, expectedSubject) }))
@@ -298,7 +298,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             {
                 ClientId = "device_flow",
                 RequestedScopes = new[] {"openid", "api1"},
-                CreationTime = new DateTime(2018, 10, 19, 16, 14, 29),
+                CreationTime = new DateTime(2018, 10, 19, 16, 14, 29, DateTimeKind.Utc),
                 Lifetime = 300,
                 IsOpenId = true
             };
@@ -325,7 +325,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
                 Subject = new ClaimsPrincipal(new ClaimsIdentity(new List<Claim> { new Claim(JwtClaimTypes.Subject, expectedSubject) })),
                 IsAuthorized = true,
                 IsOpenId = true,
-                CreationTime = new DateTime(2018, 10, 19, 16, 14, 29),
+                CreationTime = new DateTime(2018, 10, 19, 16, 14, 29, DateTimeKind.Utc),
                 Lifetime = 300
             };
 
@@ -363,7 +363,7 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
             {
                 ClientId = "device_flow",
                 RequestedScopes = new[] { "openid", "api1" },
-                CreationTime = new DateTime(2018, 10, 19, 16, 14, 29),
+                CreationTime = new DateTime(2018, 10, 19, 16, 14, 29, DateTimeKind.Utc),
                 Lifetime = 300,
                 IsOpenId = true
             };

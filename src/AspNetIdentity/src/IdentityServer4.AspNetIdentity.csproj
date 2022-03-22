@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <PackageId>GST.IdentityServer4.AspNetIdentity</PackageId>
@@ -41,6 +41,10 @@
   <ItemGroup>
     <PackageReference Include="GST.IdentityServer4" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="MinVer" />
   </ItemGroup>
 
 </Project>

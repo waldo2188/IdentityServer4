@@ -1,4 +1,4 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
@@ -39,7 +39,7 @@ namespace IdentityServer4.EntityFramework.DbContexts
     public class PersistedGrantDbContext<TContext> : DbContext, IPersistedGrantDbContext
         where TContext : DbContext, IPersistedGrantDbContext
     {
-        private readonly OperationalStoreOptions storeOptions;
+        private readonly OperationalStoreOptions _storeOptions;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PersistedGrantDbContext"/> class.
@@ -51,7 +51,7 @@ namespace IdentityServer4.EntityFramework.DbContexts
             : base(options)
         {
             if (storeOptions == null) throw new ArgumentNullException(nameof(storeOptions));
-            this.storeOptions = storeOptions;
+            _storeOptions = storeOptions;
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace IdentityServer4.EntityFramework.DbContexts
         /// </remarks>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ConfigurePersistedGrantContext(storeOptions);
+            modelBuilder.ConfigurePersistedGrantContext(_storeOptions);
 
             base.OnModelCreating(modelBuilder);
         }

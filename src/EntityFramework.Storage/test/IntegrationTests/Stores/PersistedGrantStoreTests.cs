@@ -1,4 +1,4 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
@@ -39,8 +39,8 @@ namespace IdentityServer4.EntityFramework.IntegrationTests.Stores
                 ClientId = clientId ?? Guid.NewGuid().ToString(),
                 SubjectId = sub ?? Guid.NewGuid().ToString(),
                 SessionId = sid ?? Guid.NewGuid().ToString(),
-                CreationTime = new DateTime(2016, 08, 01),
-                Expiration = new DateTime(2016, 08, 31),
+                CreationTime = new DateTime(2016, 08, 01, 0, 0, 0, DateTimeKind.Utc),
+                Expiration = new DateTime(2016, 08, 31, 0, 0, 0, DateTimeKind.Utc),
                 Data = Guid.NewGuid().ToString()
             };
         }

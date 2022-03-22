@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <PackageId>GST.IdentityServer4.EntityFramework</PackageId>
@@ -34,8 +34,16 @@
 
   <ItemGroup>
     <PackageReference Include="GST.IdentityServer4" />
-    <PackageReference Include="GST.IdentityServer4.EntityFramework.Storage" />
+      <!-- PackageReference Include="GST.IdentityServer4.EntityFramework.Storage" / -->
     
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\EntityFramework.Storage\src\IdentityServer4.EntityFramework.Storage.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="MinVer" />
   </ItemGroup>
 </Project>
