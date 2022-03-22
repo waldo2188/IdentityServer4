@@ -27,6 +27,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer4.EntityFrame
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityServer4.EntityFramework.Tests", "src\EntityFramework\test\IdentityServer4.EntityFramework.Tests\IdentityServer4.EntityFramework.Tests.csproj", "{20F94152-A8E2-46BD-80FF-88D5C8F53015}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "package", "package", "{BF691FEE-369B-44E7-B4CE-DEC1B69FBBFD}"
+	ProjectSection(SolutionItems) = preProject
+		src\Directory.Build.targets = src\Directory.Build.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
