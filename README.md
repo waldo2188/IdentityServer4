@@ -1,5 +1,5 @@
 > Fork from [IdentityServer4](https://github.com/IdentityServer/IdentityServer4) which is no longer maintained anyway.  
-> This version is .net6 compatible
+> This version is .net7 compatible
 
 
 ## About IdentityServer4
@@ -16,9 +16,10 @@ Active development happens on the main branch. This always contains the latest v
 
 ## How to build
 
-* [Install](https://www.microsoft.com/net/download/core#/current) the latest .NET6 SDK
+* [Install](https://www.microsoft.com/net/download/core#/current) the latest .NET7 SDK
 * Install Git
 * Clone this repo
+* set a tag `git tag 7.0.0` to defined the nuget version packet
 * Run `build.ps1` or `build.sh` in the root of the cloned repo
 
 ## How to update Nuget dependencies version
@@ -39,7 +40,7 @@ For project documentation, please visit [documentation folder](docs/).
 You know how to do ?
 
 ## Commercial and Community Support
-I don't do that but you can check [Duende Software](https://duendesoftware.com/products/identityserver) *(from the original guis behind this work !)*
+I don't do that, but you can check [Duende Software](https://duendesoftware.com/products/identityserver) *(from the original guys behind this work !)*
 
 ## Acknowledgements
 IdentityServer4 is built using the following great open source projects and free services:
